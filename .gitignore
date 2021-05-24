@@ -1,0 +1,49 @@
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+.classpath
+
+# project
+.project
+.metadata
+
+# generated files
+bin/
+gen/
+tmp/
+*.tmp
+*.bak
+*.swp
+
+# Eclipse
+.settings/
+
+# Local configuration file (sdk path, etc)
+local.properties
+.loadpath
+*.userprefs
+build.xml
+project.properties
+
+#MAC
+.DS_Store
+
+# signingConfigs for gradle, refer to http://stackoverflow.com/a/21494441
+signing.gradle
+
+# Gradle generated files
+.gradle
+
+#Android Studio
+.idea/
+*.iml
+**/*.iml
+
+# gradlew build
+/build

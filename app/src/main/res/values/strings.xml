@@ -1,0 +1,139 @@
+<resources>
+    <string name="app_name">LTSample</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="string_you">You</string>
+    <string name="string_account">Enter Account</string>
+
+    <string name="item_invite">Invite</string>
+    <string name="item_copy">Copy</string>
+    <string name="item_recall">Recall</string>
+    <string name="item_delete">Delete</string>
+    <string name="item_image">Image</string>
+
+    <string name="msg_waiting_for_connection">Waiting for connection</string>
+    <string name="string_call_swipe_up">Swipe up to accept</string>
+
+    <!--    region Main page -->
+    <string name="main_tab_item_chat">Chat</string>
+    <string name="main_tab_item_call">Call</string>
+    <string name="main_tab_menu_item_new_group">New Group</string>
+    <string name="main_tab_menu_item_setting">Setting</string>
+    <string name="main_tab_menu_item_log_out">Log Out</string>
+    <!--    endregion-->
+
+    <!--    region AbstractCreate page -->
+    <string name="create_title">Select Contact</string>
+    <string name="create_user_is_not_member">The User is not a LT member.</string>
+    <!--    endregion-->
+
+    <!--    region CreateGroup page -->
+    <string name="create_group_hint">Type group subject here....</string>
+    <string name="create_group_set_subject_empty">Provide a group subject and optional group icon.</string>
+    <!--    endregion-->
+
+    <!--    region Picker page -->
+    <string name="picker_title">Select Contact</string>
+    <string name="picker_selected_list_is_empty">At least 1 contact must be selected</string>
+    <!--    endregion-->
+
+    <!--    region CallList page -->
+    <string name="call_list_get_call_log_list_error">Get call log failed.</string>
+    <string name="call_list_duplicate_call">You are in a call!</string>
+    <!--    endregion-->
+
+    <!--    region Chat page -->
+    <string name="chat_subtitle_single">last seen recently</string>
+    <string name="chat_subtitle_member_only_one">1 member</string>
+    <string name="chat_subtitle_members">%d members</string>
+    <string name="chat_menu_item_call">Call</string>
+    <string name="chat_menu_item_group_info">Group info</string>
+    <string name="chat_menu_item_clear_chat">Clear chat</string>
+
+    <string name="chat_message_image">Image sent.</string>
+    <string name="chat_message_recall">This message has been recalled.</string>
+    <string name="chat_message_join">Joined chat.</string>
+    <string name="chat_message_create_channel">Chat created.</string>
+    <string name="chat_message_invite_member">Member invited.</string>
+    <string name="chat_message_kick_member">Member kicked.</string>
+    <string name="chat_message_leave_channel">Member left.</string>
+    <string name="chat_message_dismiss_channel">Chat dismissed.</string>
+    <string name="chat_message_change_channel_profile">Chat profile changed.</string>
+
+    <string name="chat_text_copy_message">Message Copied!</string>
+    <string name="chat_recall_message">Recall message?</string>
+    <string name="chat_delete_message">Delete message?</string>
+    <string name="chat_clear_chat_message">Are you sure you want to clear messages in this chat?</string>
+    <string name="chat_recall_error">Recall message failed.</string>
+    <string name="chat_delete_error">Delete message failed.</string>
+    <!--    endregion-->
+
+    <!--    region ChatSetting page -->
+    <string name="chat_setting_menu_item_edit_subject">Edit Subject</string>
+    <string name="chat_setting_menu_item_edit_channel_profile">Edit Channel Profile</string>
+    <string name="chat_setting_channel_profile_change">Change Channel Profile</string>
+    <string name="chat_setting_channel_profile_delete">Delete Channel Profile</string>
+    <string name="chat_setting_mute">Mute</string>
+    <string name="chat_setting_member_list">Group Member</string>
+    <string name="chat_setting_dismiss">Dismiss</string>
+    <string name="chat_setting_leave">Leave</string>
+    <string name="chat_setting_get_channel_info_error">Get channel info failed.</string>
+    <string name="chat_setting_update_subject_error">Update channel subject failed.</string>
+    <string name="chat_setting_set_mute_error">Set channel mute failed.</string>
+    <string name="chat_setting_dismiss_channel_error">Dismiss channel failed.</string>
+    <string name="chat_setting_leave_channel_error">Leave channel failed.</string>
+    <string name="chat_setting_set_channel_profile_error">Set channel profile failed.</string>
+    <!--    endregion-->
+
+    <!--    region MemberList page -->
+    <string name="member_list_title">Group Member (%s)</string>
+    <string name="member_list_admin">(Group Admin)</string>
+    <string name="member_list_kick_member_message">Remove %s from %s group?</string>
+    <string name="member_list_get_member_list_error">Get member list failed.</string>
+    <string name="member_list_invite_member_error">Invite member failed.</string>
+    <string name="member_list_kick_member_error">Get member list failed.</string>
+    <!--    endregion-->
+
+    <!--    region SetProfile page -->
+    <string name="set_profile_title">Profile info</string>
+    <string name="set_profile_description">Please provide your name and an optional profile photo</string>
+    <string name="set_profile_hint">Type your name here</string>
+    <string name="set_profile_avatar_change">Change Avatar</string>
+    <string name="set_profile_avatar_delete">Delete Avatar</string>
+    <string name="set_profile_set_nickname_empty">Nickname cannot be empty.</string>
+    <string name="set_profile_set_nickname_error">Set Nickname failed.</string>
+    <string name="set_profile_change_profile_error">Change profile failed.</string>
+    <string name="set_profile_delete_profile_error">Delete profile failed.</string>
+    <!--    endregion-->
+
+    <!--    region Setting page -->
+    <string name="setting_title">Setting</string>
+    <string name="setting_item_mute">Notification Mute</string>
+    <string name="setting_item_display_sender">Notification Display Sender</string>
+    <string name="setting_item_display_content">Notification Display Content</string>
+    <string name="setting_notification_sync_error">Notification sync error.</string>
+    <string name="setting_set_mute_error">Set notification mute error.</string>
+    <string name="setting_set_display_error">Set notification display error.</string>
+    <!--    endregion-->
+
+    <!--    region Authentication page -->
+    <string name="login_title">Login</string>
+    <string name="login_assistant">Please login to continue using App</string>
+    <string name="login_link">Go to Register</string>
+
+    <string name="register_title">Register</string>
+    <string name="register_assistant">Please fill the details to create account</string>
+    <string name="register_link">Go to Login</string>
+
+    <string name="hint_account">Account</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="register_password_not_consistent">Password settings are not consistent.</string>
+    <string name="error_input">Wrong input</string>
+    <string name="error_password">Wrong password</string>
+    <string name="error_account_not_exist">The account does not exist</string>
+    <string name="error_account_exists">The account already exists</string>
+    <string name="error_need_password">The password is necessary in register</string>
+    <string name="error_unknown">Unknown error</string>
+    <!--    endregion-->
+</resources>

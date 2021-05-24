@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/edit_subject"
+        android:title="@string/chat_setting_menu_item_edit_subject"
+        app:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+    <item
+        android:id="@+id/edit_channel_profile"
+        android:title="@string/chat_setting_menu_item_edit_channel_profile"
+        app:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+</menu>

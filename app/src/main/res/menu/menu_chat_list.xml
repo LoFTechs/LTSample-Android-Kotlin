@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/new_group"
+        android:title="@string/main_tab_menu_item_new_group"
+        app:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/settings"
+        android:title="@string/main_tab_menu_item_setting"
+        app:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/log_out"
+        android:title="@string/main_tab_menu_item_log_out"
+        app:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+
+</menu>

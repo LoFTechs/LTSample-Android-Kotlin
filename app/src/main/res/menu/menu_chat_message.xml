@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/call"
+        android:title="@string/chat_menu_item_call"
+        android:icon="@drawable/ic_action_call"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/group_info"
+        android:title="@string/chat_menu_item_group_info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/clear_chat"
+        android:title="@string/chat_menu_item_clear_chat"
+        app:showAsAction="never" />
+</menu>
