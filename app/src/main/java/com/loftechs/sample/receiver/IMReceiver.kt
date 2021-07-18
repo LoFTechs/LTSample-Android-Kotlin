@@ -84,6 +84,7 @@ class IMReceiver : LTIMManagerListener() {
     override fun onIncomingChannelProfile(toUserID: String, response: LTChannelProfileResponse) {
         logDebug("onIncomingSetChannelProfile response: $response")
         ProfileInfoManager.cleanProfileInfoByID(response.chID)
+        FileUtil.getProfileFile("${response.chID}.jpg", false).remove()
         EventBus.getDefault().post(IncomingMessageEvent(toUserID, response.chID, response))
         EventBus.getDefault().post(ChatEvent(toUserID, response.chID))
     }
@@ -173,11 +174,14 @@ class IMReceiver : LTIMManagerListener() {
     override fun onIncomingSetUserProfile(toUserID: String, setUserProfileResponse: LTSetUserProfileResponse) {
         logDebug("onIncomingSetUserProfile response: $setUserProfileResponse")
         ProfileInfoManager.cleanProfileInfoByID(toUserID)
+        FileUtil.getProfileFile("${toUserID}.jpg", false).remove()
         EventBus.getDefault().post(UserProfileChangeEvent(toUserID, toUserID))
     }
 
     override fun onIncomingModifyUserProfile(toUserID: String, modifyUserProfileResponse: LTModifyUserProfileResponse) {
         logDebug("onIncomingModifyUserProfile response: $modifyUserProfileResponse")
+        ProfileInfoManager.cleanProfileInfoByID(modifyUserProfileResponse.senderID)
+        FileUtil.getProfileFile("${modifyUserProfileResponse.senderID}.jpg", false).remove()
         EventBus.getDefault().post(UserProfileChangeEvent(toUserID, toUserID))
     }
 

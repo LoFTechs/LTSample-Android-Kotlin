@@ -19,20 +19,24 @@ object AvatarManager {
 
     fun loadAvatar(receiverID: String, fileInfo: LTFileInfo?): Observable<Uri> {
         return fileInfo?.let {
-            val localFile = FileUtil.getProfileFile(it.filename, true)
-            if (localFile.length() > 0) {
-                logDebug("[local]loadAvatar file(${it.filename})")
-                Observable.just(Uri.fromFile(localFile))
+            if(!it.isExist) {
+                Observable.error(Throwable("loadAvatar fileInfo is not exist."))
             } else {
-                logDebug("[remote]loadAvatar file(${it.filename})")
-                downloadAvatar(receiverID, it, localFile)
-                        .flatMap {
-                            if (localFile.length() > 0) {
-                                Observable.just(Uri.fromFile(localFile))
-                            } else {
-                                Observable.error(Throwable("Avatar file has problem."))
+                val localFile = FileUtil.getProfileFile(it.filename, true)
+                if (localFile.length() > 0) {
+                    logDebug("[local]loadAvatar file(${it.filename})")
+                    Observable.just(Uri.fromFile(localFile))
+                } else {
+                    logDebug("[remote]loadAvatar file(${it.filename})")
+                    downloadAvatar(receiverID, it, localFile)
+                            .flatMap {
+                                if (localFile.length() > 0) {
+                                    Observable.just(Uri.fromFile(localFile))
+                                } else {
+                                    Observable.error(Throwable("Avatar file has problem."))
+                                }
                             }
-                        }
+                }
             }
         } ?: run {
             logDebug("loadAvatar fileInfo is null")
