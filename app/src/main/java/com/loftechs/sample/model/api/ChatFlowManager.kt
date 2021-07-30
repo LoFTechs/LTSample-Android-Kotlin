@@ -2,6 +2,8 @@ package com.loftechs.sample.model.api
 
 import android.net.Uri
 import com.loftechs.sample.LTSDKManager.getIMManager
+import com.loftechs.sample.model.ProfileInfoManager
+import com.loftechs.sdk.im.LTIMManager
 import com.loftechs.sdk.im.channels.*
 import com.loftechs.sdk.im.message.LTDeleteChannelMessageResponse
 import com.loftechs.sdk.im.message.LTFileMessageStatus
@@ -87,11 +89,15 @@ object ChatFlowManager {
     }
 
     fun deleteChannelAvatar(receiverID: String, chID: String): Observable<LTChannelProfileFileResponse> {
-        return getIMManager(receiverID)
-                .flatMap {
-                    it.channelHelper.setChannelAvatar(Utils.createTransId(), chID, null)
-                }
-                .filter {
+        return ProfileInfoManager.getProfileInfoByChatID(receiverID, chID)
+                .flatMap{
+                    getIMManager(receiverID)
+                            .flatMap { imManager: LTIMManager ->
+                                it.profileFileInfo?.let { it ->
+                                    imManager.channelHelper.deleteChannelAvatar(Utils.createTransId(), chID, it)
+                                }
+                            }
+                }.filter {
                     it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
                 }
     }

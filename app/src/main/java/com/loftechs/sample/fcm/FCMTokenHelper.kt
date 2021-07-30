@@ -52,7 +52,7 @@ object FCMTokenHelper {
     private fun handleKey(registrationId: String?) {
         Timber.tag(TAG).d("handleKey registrationId = $registrationId")
         if (registrationId.isNullOrEmpty()) {
-            val intent = Intent(SampleApp.context, MyFirebaseInstanceIDService::class.java)
+            val intent = Intent(SampleApp.context, MyFirebaseMessagingService::class.java)
             SampleApp.context.startService(intent)
             return
         }
@@ -62,7 +62,7 @@ object FCMTokenHelper {
     private fun updateKeyWithServer(registrationId: String?) {
         Timber.tag(TAG).d("Send key to server")
         try {
-            LTSDK.getInstance().updateNotificationKey(registrationId)
+            LTSDK.getInstance().updateNotificationKey(registrationId, false)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(object : Observer<LTResponse> {
                         override fun onSubscribe(d: Disposable) {}

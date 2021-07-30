@@ -88,7 +88,7 @@ object MyNotificationManager {
             LTMessageType.TYPE_KICK_MEMBERS,
             LTMessageType.TYPE_LEAVE_CHANNEL,
             LTMessageType.TYPE_DISMISS_CHANNEL,
-            LTMessageType.TYPE_SET_CHANNEL_PROFILE,
+            LTMessageType.TYPE_SET_CHANNEL_PROFILE
             -> {
                 messageType.getShowMessage()
             }

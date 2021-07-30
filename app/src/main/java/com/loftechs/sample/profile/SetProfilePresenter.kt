@@ -129,7 +129,7 @@ class SetProfilePresenter : SetProfileContract.Presenter<SetProfileContract.View
     }
 
     override fun deleteAvatar() {
-        val subscribe = UserProfileManager.setUserAvatar(mReceiverID, null)
+        val subscribe = UserProfileManager.deleteUserAvatar(mReceiverID)
                 .doOnNext {
                     getSelfAvatarFile().delete()
                 }

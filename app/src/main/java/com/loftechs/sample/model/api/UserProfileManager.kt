@@ -4,11 +4,14 @@ import android.net.Uri
 import com.loftechs.sample.LTSDKManager.getIMManager
 import com.loftechs.sample.extensions.logDebug
 import com.loftechs.sample.extensions.logError
+import com.loftechs.sample.model.ProfileInfoManager
+import com.loftechs.sample.model.data.ProfileInfoEntity
 import com.loftechs.sdk.im.LTIMManager
 import com.loftechs.sdk.im.message.LTFileMessageStatus
 import com.loftechs.sdk.im.users.*
 import com.loftechs.sdk.utils.Utils
 import io.reactivex.Observable
+import io.reactivex.ObservableSource
 import timber.log.Timber
 import java.util.*
 
@@ -44,6 +47,29 @@ object UserProfileManager {
                     imManager.userHelper.setUserAvatar(Utils.createTransId(), uri)
                 }
                 .filter {
+                    it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
+                }
+                .doOnNext {
+                    logDebug("setUserAvatar : $it")
+                }
+                .doOnError {
+                    logError("setUserAvatar", it)
+                }
+    }
+
+    /**
+     * delete avatar
+     */
+    fun deleteUserAvatar(receiverID: String): Observable<LTUserProfileFileResponse> {
+        return ProfileInfoManager.getProfileInfoByUserID(receiverID, receiverID)
+                .flatMap{
+                    getIMManager(receiverID)
+                            .flatMap { imManager: LTIMManager ->
+                                it.profileFileInfo?.let { it ->
+                                    imManager.userHelper.deleteUserAvatar(Utils.createTransId(), it)
+                                }
+                            }
+                }.filter {
                     it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
                 }
                 .doOnNext {

@@ -20,6 +20,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        FCMTokenHelper.performUpdate()
         Timber.tag(TAG).i("onNewToken ++ token: $token")
     }
 
