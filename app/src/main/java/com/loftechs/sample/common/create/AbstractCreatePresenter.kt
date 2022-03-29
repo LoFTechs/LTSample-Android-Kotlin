@@ -1,6 +1,7 @@
 package com.loftechs.sample.common.create
 
 import android.os.Bundle
+import com.loftechs.sample.BuildConfig
 import com.loftechs.sample.R
 import com.loftechs.sample.common.IntentKey
 import com.loftechs.sample.extensions.logDebug
@@ -10,6 +11,7 @@ import com.loftechs.sample.model.api.ChatFlowManager
 import com.loftechs.sample.model.api.UserManager
 import com.loftechs.sample.model.data.ProfileInfoEntity
 import com.loftechs.sdk.im.channels.LTChannelType
+import com.loftechs.sdk.user.LTUserStatus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -94,7 +96,13 @@ abstract class AbstractCreatePresenter : CreateContract.Presenter<CreateContract
     override fun checkUserExistAndCreate(account: String) {
         val subscribe = UserManager.getUserStatusWithSemiUIDs(listOf(account))
                 .map {
-                    it[0]
+                    var user: LTUserStatus = it[0]
+                    it.forEach { userStatus: LTUserStatus ->
+                        if (BuildConfig.Brand_ID == userStatus.brandID) {
+                            user = userStatus
+                        }
+                    }
+                    user
                 }
                 .flatMap {
                     if (it.userID.isNullOrEmpty()) {
