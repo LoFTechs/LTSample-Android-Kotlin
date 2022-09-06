@@ -4,6 +4,7 @@ import android.net.Uri
 import com.loftechs.sample.LTSDKManager.getIMManager
 import com.loftechs.sdk.im.LTIMManager
 import com.loftechs.sdk.im.channels.LTChannelType
+import com.loftechs.sdk.im.extension.rx.*
 import com.loftechs.sdk.im.message.*
 import com.loftechs.sdk.im.queries.LTQueryMessageResponse
 import com.loftechs.sdk.utils.Utils
@@ -12,7 +13,12 @@ import java.util.*
 
 object MessageFlowManager {
 
-    fun sendQueryMessage(receiverID: String, chID: String, startTS: Long, afterN: Int): Observable<LTQueryMessageResponse> {
+    fun sendQueryMessage(
+            receiverID: String,
+            chID: String,
+            startTS: Long,
+            afterN: Int
+    ): Observable<LTQueryMessageResponse> {
         return getIMManager(receiverID)
                 .flatMap { imManager: LTIMManager ->
                     imManager.messageHelper.queryMessage(Utils.createTransId(),
@@ -20,7 +26,12 @@ object MessageFlowManager {
                 }
     }
 
-    fun sendTextMessage(receiverID: String, chID: String, chType: LTChannelType, message: String): Observable<LTSendMessageResponse> {
+    fun sendTextMessage(
+            receiverID: String,
+            chID: String,
+            chType: LTChannelType,
+            message: String
+    ): Observable<LTSendMessageResponse> {
         val textMessage = LTTextMessage.builder()
                 .chType(chType)
                 .chID(chID)
@@ -30,7 +41,14 @@ object MessageFlowManager {
         return sendMessage(receiverID, textMessage)
     }
 
-    fun sendImageMessage(receiverID: String, chID: String, chType: LTChannelType, uri: Uri, thUri: Uri, displayFileName: String): Observable<LTFileMessageResponse> {
+    fun sendImageMessage(
+            receiverID: String,
+            chID: String,
+            chType: LTChannelType,
+            uri: Uri,
+            thUri: Uri,
+            displayFileName: String
+    ): Observable<LTFileMessageResponse> {
         val imageMessage = LTImageMessage.builder()
                 .chType(chType)
                 .chID(chID)
@@ -39,10 +57,16 @@ object MessageFlowManager {
                 .thumbnailUri(thUri)
                 .displayFileName(displayFileName)
                 .build()
-        return sendMessage(receiverID, imageMessage)
+        return sendFileMessage(receiverID, imageMessage)
     }
 
-    fun sendDocumentMessage(receiverID: String, chID: String, chType: LTChannelType, uri: Uri, displayFileName: String): Observable<LTFileMessageResponse> {
+    fun sendDocumentMessage(
+            receiverID: String,
+            chID: String,
+            chType: LTChannelType,
+            uri: Uri,
+            displayFileName: String
+    ): Observable<LTFileMessageResponse> {
         val documentMessage = LTDocumentMessage.builder()
                 .chType(chType)
                 .chID(chID)
@@ -50,18 +74,35 @@ object MessageFlowManager {
                 .fileUri(uri)
                 .displayFileName(displayFileName)
                 .build()
-        return sendMessage(receiverID, documentMessage)
+        return sendFileMessage(receiverID, documentMessage)
     }
 
-    private fun <T : LTSendMessageResponse> sendMessage(receiverID: String, message: LTMessage): Observable<T> {
+    private fun sendFileMessage(
+            receiverID: String,
+            message: LTMessage
+    ): Observable<LTFileMessageResponse> {
         return getIMManager(receiverID)
-                .flatMap { imManager: LTIMManager -> imManager.messageHelper.sendMessage(message) }
+                .flatMap { imManager: LTIMManager ->
+                    imManager.messageHelper.sendMessage(message)
+                }
+    }
+
+    private fun sendMessage(
+            receiverID: String,
+            message: LTMessage
+    ): Observable<LTSendMessageResponse> {
+        return getIMManager(receiverID)
+                .flatMap { imManager: LTIMManager ->
+                    imManager.messageHelper.sendMessage(message)
+                }
     }
 
     fun deleteMessage(receiverID: String, msgID: String): Observable<LTDeleteMessagesResponse> {
         return getIMManager(receiverID)
                 .flatMap { imManager: LTIMManager ->
-                    imManager.messageHelper.deleteMessages(Utils.createTransId(), Collections.singletonList(msgID))
+                    imManager.messageHelper.deleteMessages(
+                            Utils.createTransId(),
+                            Collections.singletonList(msgID))
                 }
     }
 
@@ -69,11 +110,18 @@ object MessageFlowManager {
         val silentMode = false
         return getIMManager(receiverID)
                 .flatMap { imManager: LTIMManager ->
-                    imManager.messageHelper.recallMessages(Utils.createTransId(), Collections.singletonList(msgID), silentMode)
+                    imManager.messageHelper.recallMessage(
+                            Utils.createTransId(),
+                            Collections.singletonList(msgID),
+                            silentMode)
                 }
     }
 
-    fun markRead(receiverID: String, channelID: String, markReadTime:Long): Observable<LTMarkReadResponse> {
+    fun markRead(
+            receiverID: String,
+            channelID: String,
+            markReadTime: Long
+    ): Observable<LTMarkReadResponse> {
         return getIMManager(receiverID)
                 .flatMap {
                     it.messageHelper.markRead(Utils.createTransId(), channelID, markReadTime)

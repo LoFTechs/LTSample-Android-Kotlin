@@ -7,9 +7,8 @@ import com.loftechs.sample.utils.VersionUtil
 import com.loftechs.sdk.LTSDK
 import com.loftechs.sdk.LTSDKNoInitializationException
 import com.loftechs.sdk.http.response.LTResponse
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import com.loftechs.sdk.listener.LTCallbackResultListener
+import com.loftechs.sdk.listener.LTErrorInfo
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -62,21 +61,20 @@ object FCMTokenHelper {
     private fun updateKeyWithServer(registrationId: String?) {
         Timber.tag(TAG).d("Send key to server")
         try {
-            LTSDK.getInstance().updateNotificationKey(registrationId, false)
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(object : Observer<LTResponse> {
-                        override fun onSubscribe(d: Disposable) {}
-                        override fun onNext(LTResponse: LTResponse) {
-                            Timber.tag(TAG).d("updateNotificationKey returnCode: ${LTResponse.returnCode}")
-                            saveFCMKey(registrationId)
-                        }
+            LTSDK.updateNotificationKey(
+                registrationId,
+                false,
+                object : LTCallbackResultListener<LTResponse> {
+                    override fun onError(errorInfo: LTErrorInfo) {
+                        Timber.tag(TAG).d("updateNotificationKey onError: $errorInfo")
+                    }
 
-                        override fun onError(e: Throwable) {
-                            Timber.tag(TAG).d("updateNotificationKey onError: $e")
-                        }
-
-                        override fun onComplete() {}
-                    })
+                    override fun onResult(result: LTResponse) {
+                        Timber.tag(TAG)
+                            .d("updateNotificationKey returnCode: ${result.getReturnCode()}")
+                        saveFCMKey(registrationId)
+                    }
+                })
         } catch (e: LTSDKNoInitializationException) {
             e.printStackTrace()
         }

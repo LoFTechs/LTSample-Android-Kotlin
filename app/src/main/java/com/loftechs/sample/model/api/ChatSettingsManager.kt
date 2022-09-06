@@ -2,6 +2,7 @@ package com.loftechs.sample.model.api
 
 import com.loftechs.sample.LTSDKManager.getIMManager
 import com.loftechs.sdk.im.channels.*
+import com.loftechs.sdk.im.extension.rx.*
 import com.loftechs.sdk.im.queries.LTQueryChannelsResponse
 import com.loftechs.sdk.utils.Utils
 import io.reactivex.Observable
@@ -33,7 +34,11 @@ object ChatSettingsManager {
     /**
      * Set channel subject
      */
-    fun setChannelSubject(userID: String, channelID: String, subject: String): Observable<LTChannelProfileResponse> {
+    fun setChannelSubject(
+            userID: String,
+            channelID: String,
+            subject: String
+    ): Observable<LTChannelProfileResponse> {
         return getIMManager(userID)
                 .flatMap {
                     it.channelHelper.setChannelSubject(Utils.createTransId(), channelID, subject)
@@ -49,7 +54,11 @@ object ChatSettingsManager {
     /**
      * Set channel mute status
      */
-    fun setChannelMute(userID: String, channelID: String, mute: Boolean): Observable<LTChannelPreferenceResponse> {
+    fun setChannelMute(
+            userID: String,
+            channelID: String,
+            mute: Boolean
+    ): Observable<LTChannelPreferenceResponse> {
         return getIMManager(userID)
                 .concatMap {
                     it.channelHelper.setChannelMute(Utils.createTransId(), channelID, mute)

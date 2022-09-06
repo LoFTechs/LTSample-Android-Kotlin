@@ -12,7 +12,7 @@ import java.io.File
 object RemoteFileManager {
 
     fun downloadFile(receiverID: String, fileInfo: LTFileInfo, file: File): Observable<LTStorageResult> {
-        return execute(receiverID, LTStorageAction.createDownloadFileAction(fileInfo, file))
+        return execute(receiverID, LTStorageAction.createDownloadFileAction(fileInfo, file, 10))
     }
 
     private fun execute(receiverID: String, action: LTStorageAction): Observable<LTStorageResult> {

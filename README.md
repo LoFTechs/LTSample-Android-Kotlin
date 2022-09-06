@@ -21,7 +21,7 @@ To use our Android sample, you should first install
 
 |Sample|Android|Java|Gradle| 
 |---|---|---|---|
-| LTSample |5.0 (API level 21) or higher|7 or higher|3.5.3 or higher |
+| LTSample |5.0 (API level 21) or higher|7 or higher|3.5.4 or higher |
 
 ### Start LT Sample
 
@@ -77,7 +77,16 @@ Step 3. Grant system permissions in your module level AndroidManifest.xml file:
 
 ```
 <uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+
+### Use LT CallSDK in LTSample project
+Step 1. Please contact us and you'll get google-services.json file.
+
+Step 2. Add this line to build.gradle file:
 
 ```
+apply plugin: 'com.google.gms.google-services'
+```
+
+Step 3. Put google-services.json file to LTSample project. 
+
