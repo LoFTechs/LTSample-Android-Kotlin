@@ -13,6 +13,7 @@ import com.loftechs.sample.SampleApp
 import com.loftechs.sample.extensions.getShowMessage
 import com.loftechs.sample.main.MainActivity
 import com.loftechs.sample.model.PreferenceSetting
+import com.loftechs.sdk.LTSDK
 import com.loftechs.sdk.im.message.LTMessageType
 import org.json.JSONException
 import org.json.JSONObject
@@ -47,12 +48,20 @@ object MyNotificationManager {
             } else {
                 "$display : ${getLastMessage(LTMessageType.create(messageType), contentString)}"
             }
+
+            // Targeting S+ (version 31 and above) requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE
+            val notificationContentIntent = if (Build.VERSION.SDK_INT >= 31) {
+                PendingIntent.getActivity(SampleApp.context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                PendingIntent.getActivity(SampleApp.context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
             val builder = NotificationCompat.Builder(SampleApp.context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_notification)
                     .setColor(ContextCompat.getColor(SampleApp.context, R.color.colorPrimaryDark))
                     .setContentTitle(SampleApp.context.getString(R.string.app_name))
                     .setContentText(contentString)
-                    .setContentIntent(PendingIntent.getActivity(SampleApp.context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                    .setContentIntent(notificationContentIntent)
                     .setAutoCancel(true)
             val notificationManager = NotificationManagerCompat.from(SampleApp.context)
             // Create the NotificationChannel, but only on API 26+ because

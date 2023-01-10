@@ -33,109 +33,100 @@ object ChatFlowManager {
     }
 
     fun queryChannelListByChannelType(
-        receiverID: String,
-        channelTypeList: List<LTChannelType>,
+            receiverID: String,
+            channelTypeList: List<LTChannelType>,
     ): Observable<List<LTChannelResponse>> {
         return getIMManager(receiverID)
-            .flatMap {
-                it.channelHelper.queryChannelList(
-                    Utils.createTransId(),
-                    channelTypeList, false, 30
-                )
-            }
-            .map {
-                it.channels
-            }
+                .flatMap {
+                    it.channelHelper.queryChannelList(Utils.createTransId(),
+                            channelTypeList, false, 30)
+                }
+                .map {
+                    it.channels
+                }
 
     }
 
     fun queryChannelByID(
-        receiverID: String,
-        id: String,
+            receiverID: String,
+            id: String,
     ): Observable<LTChannelResponse> {
         return getIMManager(receiverID)
-            .flatMap {
-                it.channelHelper.queryChannel(
-                    Utils.createTransId(),
-                    id, false
-                )
-            }
-            .map {
-                it.channels[0]
-            }
+                .flatMap {
+                    it.channelHelper.queryChannel(Utils.createTransId(),
+                            id, false)
+                }
+                .map {
+                    it.channels[0]
+                }
 
     }
 
     fun createGroupChannel(
-        receiverID: String,
-        subject: String,
-        memberModels: Set<LTMemberModel>,
+            receiverID: String,
+            subject: String,
+            memberModels: Set<LTMemberModel>,
     ): Observable<LTCreateChannelResponse> {
         val chID = Utils.createTransId()
         return getIMManager(receiverID)
-            .flatMap {
-                it.channelHelper.createGroupChannel(
-                    Utils.createTransId(),
-                    chID,
-                    subject,
-                    memberModels
-                )
-            }
+                .flatMap {
+                    it.channelHelper.createGroupChannel(Utils.createTransId(), chID, subject, memberModels)
+                }
     }
 
     fun createSingleChannel(
-        receiverID: String,
-        memberModel: LTMemberModel
+            receiverID: String,
+            memberModel: LTMemberModel
     ): Observable<LTCreateChannelResponse> {
         return getIMManager(receiverID)
-            .flatMap {
-                it.channelHelper.createSingleChannel(Utils.createTransId(), memberModel)
-            }
+                .flatMap {
+                    it.channelHelper.createSingleChannel(Utils.createTransId(), memberModel)
+                }
     }
 
     fun setChannelAvatar(
-        receiverID: String,
-        chID: String,
-        uri: Uri
+            receiverID: String,
+            chID: String,
+            uri: Uri
     ): Observable<LTChannelProfileFileResponse> {
         return getIMManager(receiverID)
-            .flatMap {
-                it.channelHelper.setChannelAvatar(Utils.createTransId(), chID, uri)
-            }
-            .filter {
-                it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
-            }
+                .flatMap {
+                    it.channelHelper.setChannelAvatar(Utils.createTransId(), chID, uri)
+                }
+                .filter {
+                    it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
+                }
 
     }
 
     fun deleteChannelAvatar(
-        receiverID: String,
-        chID: String
+            receiverID: String,
+            chID: String
     ): Observable<LTChannelProfileFileResponse> {
         return ProfileInfoManager.getProfileInfoByChatID(receiverID, chID)
-            .flatMap {
-                getIMManager(receiverID)
-                    .flatMap { imManager: LTIMManager ->
-                        it.profileFileInfo?.let { it ->
-                            imManager.channelHelper.deleteChannelAvatar(
-                                Utils.createTransId(),
-                                chID,
-                                it
-                            )
-                        }
-                    }
-            }.filter {
-                it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
-            }
+                .flatMap {
+                    getIMManager(receiverID)
+                            .flatMap { imManager: LTIMManager ->
+                                it.profileFileInfo?.let { it ->
+                                    imManager.channelHelper.deleteChannelAvatar(
+                                            Utils.createTransId(),
+                                            chID,
+                                            it
+                                    )
+                                }
+                            }
+                }.filter {
+                    it.fileMessageStatus == LTFileMessageStatus.STATUS_MESSAGE // upload avatar status is Done
+                }
     }
 
     fun deleteChannelMessages(
-        receiverID: String,
-        channelID: String
+            receiverID: String,
+            channelID: String
     ): Observable<LTDeleteChannelMessageResponse> {
         return getIMManager(receiverID)
-            .flatMap {
-                it.messageHelper.deleteChannelMessages(Utils.createTransId(), channelID)
-            }
+                .flatMap {
+                    it.messageHelper.deleteChannelMessages(Utils.createTransId(), channelID)
+                }
     }
 }

@@ -1,16 +1,22 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
         google()
         jcenter()
     }
     dependencies {
+
+        // 如果用 NDK 23, 需搭配 gradle 4.0+, 否則遇到 否則 No toolchains found in the NDK toolchains folder for ABI with prefix: arm-linux-androideabi
+        // See https://stackoverflow.com/questions/66922162/no-toolchains-found-in-the-ndk-toolchains-folder-for-abi-with-prefix-arm-linux
+        // 因此我們暫時用 ndk 22b // 也可以在build.gradle當中指定 android { ndkVersion "22.1.7171670" }
+        // 如果用 minSDK 24, 需搭配 gradle 4.0+, 否則遇到 Failed to transform bcprov-jdk15on-1.65.jar 問題
+        // 可以在 gradle.properties 加入忽略 android.jetifier.ignorelist=org.robolectric.*,bcprov
+        // gradle 3.5.3 => 3.5.4 是因為執行 junit 測試會遇到AndroidManifest.xml merge error. 官方修補就是3.5.* => 3.5.4
+        // See https://blog.csdn.net/nnmmbb/article/details/122673252
         classpath 'com.android.tools.build:gradle:3.5.4'
         classpath 'com.google.gms:google-services:4.3.3' // google-services plugin
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.18"
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

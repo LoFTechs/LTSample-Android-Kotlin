@@ -133,7 +133,7 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
                 })
         mDisposable.add(subscribe)
         bindLastMessage(channel, view)
-        view.setMessageTimeText(DateFormatUtil.getStringFormat(channel.lastMsgTime, "YYYY/MM/dd HH:mm:ss"))
+        view.setMessageTimeText(DateFormatUtil.getStringFormat(channel.lastMsgTime, "yyyy/MM/dd HH:mm:ss"))
         var unreadCount = ""
         if (channel.unreadCount > 0) {
             unreadCount = channel.unreadCount.toString()

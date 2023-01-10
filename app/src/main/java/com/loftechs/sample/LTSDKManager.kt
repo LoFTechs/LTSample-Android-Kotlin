@@ -61,7 +61,7 @@ object LTSDKManager {
                 imManager
             }
             .doOnError {
-                Timber.tag(TAG).e("initIMConnection ++ error: $it")
+                Timber.tag(TAG).e("initIMConnection ++ doOnError: $it")
             }
     }
 
