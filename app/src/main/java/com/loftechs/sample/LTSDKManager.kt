@@ -16,6 +16,7 @@ import com.loftechs.sdk.listener.LTErrorInfo
 import com.loftechs.sdk.storage.LTStorageManager
 import com.loftechs.sdk.utils.LTLog
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 object LTSDKManager {
@@ -91,6 +92,7 @@ object LTSDKManager {
                         .uuid(it.uuid)
                         .build()
                     return LTSDK.init(options)
+                        .subscribeOn(Schedulers.newThread())
                         .map { aBoolean: Boolean ->
                             LTLog.i(TAG, "getLTSDK init: $aBoolean")
                             if (aBoolean && it.uuid.isNotEmpty()) {
