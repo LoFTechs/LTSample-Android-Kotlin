@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
@@ -15,7 +16,7 @@ buildscript {
 
     dependencies {
         // Add this line
-        classpath 'com.google.gms:google-services:4.3.8'
+        classpath 'com.google.gms:google-services:4.3.15'
     }
 }
 
@@ -26,10 +27,10 @@ allprojects {
     }
 }
 //LTSDK
-def LTSDK_version = "5.3.0.10"
+def LTSDK_version = "5.3.1.24"
 android {
     compileSdkVersion 31
-    buildToolsVersion "31.0.0"
+    ndkVersion "22.1.7171670"
 
     defaultConfig {
         applicationId "com.loftechs.sample"
@@ -49,6 +50,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/LICENSE.md', 'META-INF/NOTICE.md']
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -64,6 +71,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+    namespace 'com.loftechs.sample'
 }
 
 dependencies {
@@ -87,16 +95,16 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
 
     // eventBus
-    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'org.greenrobot:eventbus:3.3.1'
 
     // GSON
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.9.0'
 
-    // json
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1'
+    // json https://github.com/FasterXML/jackson/wiki/Jackson-Releases
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.5'
 
     //material
-    implementation 'com.google.android.material:material:1.4.0-beta01'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
 
     // Timber
@@ -119,7 +127,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
     implementation 'com.squareup.retrofit2:converter-scalars:2.8.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
     implementation 'org.conscrypt:conscrypt-android:2.2.1'
 

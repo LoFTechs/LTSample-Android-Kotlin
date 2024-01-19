@@ -155,7 +155,7 @@ fun UserProfileManager.setUserAvatar(
             .flatMap {
                 Observable.create { emmit ->
                     val transID = Utils.createTransId()
-                    val avatarUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + "/Download/image.jpg")
+                    val avatarUri = Uri.parse(Environment.getRootDirectory().toString() + "/Download/image.jpg")
                     it.userHelper.setUserAvatar(
                             transID,
                             avatarUri,

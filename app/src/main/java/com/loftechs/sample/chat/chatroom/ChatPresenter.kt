@@ -345,7 +345,7 @@ class ChatPresenter : ChatContract.Presenter<ChatContract.View> {
         val subscribe = MessageFlowManager.recallMessage(receiverID, message.id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    logDebug("recallMessage ++ onNext: ${it.recallMsgID}")
+                    logDebug("recallMessage ++ onNext: $it")
                     mMessageList[position] = SystemMessage(message.id,
                             TYPE_RECALL_MESSAGE.getShowMessage(), message.user, message.createdAt)
                     mView?.refreshSpecificMessage(mMessageList[position])

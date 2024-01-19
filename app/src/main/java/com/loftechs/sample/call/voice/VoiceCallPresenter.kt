@@ -11,6 +11,7 @@ import com.loftechs.sample.model.ProfileInfoManager
 import com.loftechs.sample.model.api.CallManager
 import com.loftechs.sample.model.data.ProfileInfoEntity
 import com.loftechs.sdk.storage.LTFileInfo
+import com.loftechs.sdk.utils.LTLog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -55,10 +56,11 @@ class VoiceCallPresenter : VoiceCallContract.Presenter<VoiceCallContract.View> {
         mReceiverID = arguments.getString(IntentKey.EXTRA_RECEIVER_ID, "")
         mCallUserID = arguments.getString(IntentKey.EXTRA_CALL_USER_ID, "")
         mCallState = arguments.getInt(IntentKey.EXTRA_CALL_STATE_TYPE, CallState.NONE.ordinal)
+        LTLog.i("VoiceCallPresenter","mCallState $mCallState")
     }
 
     override fun selectCallByStatusType() {
-        if (mCallState == CallState.OUT.ordinal) {
+        if (mCallState == CallState.OUT.ordinal || mCallState == CallState.ACCEPT.ordinal) {
             mView?.enableInCallView()
         } else {
             mView?.enableIncomingCallView()
@@ -76,6 +78,8 @@ class VoiceCallPresenter : VoiceCallContract.Presenter<VoiceCallContract.View> {
                     getAvatar(it.profileFileInfo)
                     if (mCallState == CallState.OUT.ordinal) {
                         startOutgoingCall(it)
+                    }else if(mCallState == CallState.ACCEPT.ordinal){
+                        acceptCall()
                     }
                 }, {
                     logError("startCallByUserID", it)

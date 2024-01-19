@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.loftechs.sample">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature android:glEsVersion="0x00020000" />
     <application
@@ -23,7 +22,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <receiver
@@ -38,8 +37,18 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".fcm.MyFirebaseMessagingService" android:exported="false">
-        <intent-filter>
+        <receiver
+            android:name=".call.CallNotificationDeclineCallIntentReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="call.notification.declinecall" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".fcm.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
@@ -47,12 +56,12 @@
         <activity
             android:name=".call.voice.VoiceCallActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".main.MainActivity"
-            android:label="@string/app_name"
             android:exported="true"
+            android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,6 +82,21 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+    <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+
+
+    <!-- Bluetooth -->
+    <!-- Request legacy Bluetooth permissions on older devices. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
 </manifest>

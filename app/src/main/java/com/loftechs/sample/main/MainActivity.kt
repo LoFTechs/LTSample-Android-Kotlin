@@ -49,31 +49,31 @@ class MainActivity : BaseActivity() {
             }
 
             val subscribe = LTSDKManager.sdkObservable
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (!AccountHelper.hasSelfNickname()) {
-                            showSetProfileFragment()
-                        } else {
-                            getDefaultBundle()?.let {
-                                showMainFragment(it)
-                            } ?: run {
-                                Timber.tag(TAG).e("onCreate : bundle is null")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (!AccountHelper.hasSelfNickname()) {
+                        showSetProfileFragment()
+                    } else {
+                        getDefaultBundle()?.let {
+                            showMainFragment(it)
+                        } ?: run {
+                            Timber.tag(TAG).e("onCreate : bundle is null")
+                            resetSDK()
+                        }
+                    }
+                }, { e ->
+                    Timber.tag(TAG).e("initSDK ++ error: $e")
+                    if (e is LTErrorInfo && e.errorCode == LTErrorInfo.ErrorCode.INIT_ERROR && e.returnCode == 6000) {
+                        AlertDialog.Builder(this)
+                            .setMessage(e.errorMessage)
+                            .setPositiveButton(R.string.common_confirm) { _, _ ->
                                 resetSDK()
                             }
-                        }
-                    }, { e ->
-                        Timber.tag(TAG).e("initSDK ++ error: $e")
-                        if (e is LTErrorInfo && e.errorCode == LTErrorInfo.ErrorCode.INIT_ERROR && e.returnCode == 6000) {
-                            AlertDialog.Builder(this)
-                                    .setMessage(e.errorMessage)
-                                    .setPositiveButton(R.string.common_confirm) { _, _ ->
-                                        resetSDK()
-                                    }
-                                    .setCancelable(false)
-                                    .show()
-                        }
-                    })
+                            .setCancelable(false)
+                            .show()
+                    }
+                })
             disposable.add(subscribe)
         }
     }
@@ -87,15 +87,15 @@ class MainActivity : BaseActivity() {
 
     private fun resetSDK() {
         val subscribe = LTSDKManager.resetSDK()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    PreferenceSetting.clearAllPref()
-                    AccountHelper.clearCache()
-                    gotoAuthenticationActivity()
-                }, {
-                    Timber.tag(TAG).e("resetSDK ++ error: $it")
-                })
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                PreferenceSetting.clearAllPref()
+                AccountHelper.clearCache()
+                gotoAuthenticationActivity()
+            }, {
+                Timber.tag(TAG).e("resetSDK ++ error: $it")
+            })
         disposable.add(subscribe)
     }
 
@@ -117,9 +117,11 @@ class MainActivity : BaseActivity() {
 
     private fun gotoAuthenticationActivity() {
         val intent = Intent(baseContext, AuthenticationActivity::class.java)
-        startActivityForResult(intent, REQUEST_INTRO, ActivityOptionsCompat
+        startActivityForResult(
+            intent, REQUEST_INTRO, ActivityOptionsCompat
                 .makeCustomAnimation(baseContext, R.anim.slide_in_right, R.anim.slide_out_left)
-                .toBundle())
+                .toBundle()
+        )
     }
 
     private fun showMainFragment(bundle: Bundle) {

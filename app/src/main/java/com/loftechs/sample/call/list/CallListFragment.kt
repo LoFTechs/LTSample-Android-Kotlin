@@ -13,10 +13,12 @@ import com.loftechs.sample.common.IntentKey
 import com.loftechs.sample.common.event.CallCDREvent
 import com.loftechs.sample.component.CustomLinearLayoutManager
 import com.loftechs.sample.component.VerticalRecyclerView
+import com.loftechs.sample.model.api.CallManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import java.util.ArrayList
 
 class CallListFragment : AbstractFragment(), CallListContract.View {
 
@@ -43,8 +45,8 @@ class CallListFragment : AbstractFragment(), CallListContract.View {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?,
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(R.layout.fragment_call_list, container, false)
     }
@@ -54,7 +56,8 @@ class CallListFragment : AbstractFragment(), CallListContract.View {
         mPresenter?.bindView(this)
         initView(view)
         mAdapter = CallListAdapter(mPresenter)
-        mRecyclerView.layoutManager = CustomLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        mRecyclerView.layoutManager =
+            CustomLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         mRecyclerView.adapter = mAdapter
         EventBus.getDefault().register(this)
     }

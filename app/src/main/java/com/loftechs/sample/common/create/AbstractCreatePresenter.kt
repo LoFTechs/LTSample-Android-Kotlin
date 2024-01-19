@@ -6,6 +6,7 @@ import com.loftechs.sample.R
 import com.loftechs.sample.common.IntentKey
 import com.loftechs.sample.extensions.logDebug
 import com.loftechs.sample.extensions.logError
+import com.loftechs.sample.model.AccountHelper
 import com.loftechs.sample.model.ProfileInfoManager
 import com.loftechs.sample.model.api.ChatFlowManager
 import com.loftechs.sample.model.api.UserManager

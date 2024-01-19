@@ -14,7 +14,6 @@ import com.loftechs.sdk.storage.LTFileInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 class CallListPresenter : CallListContract.Presenter<CallListContract.View> {
 
@@ -31,6 +30,7 @@ class CallListPresenter : CallListContract.Presenter<CallListContract.View> {
     }
 
     companion object {
+        private val TAG = CallListPresenter::class.java.simpleName
         private const val DEFAULT_COUNT = 20
     }
 
@@ -73,7 +73,8 @@ class CallListPresenter : CallListContract.Presenter<CallListContract.View> {
         val callLogData = mCallLogList[position]
         view.setStartTime(DateFormatUtil.getStringFormat(callLogData.startTime, "MM/dd HH:mm:ss"))
         view.setState(callLogData.callState)
-        val subscribe = ProfileInfoManager.getProfileInfoByUserID(mReceiverID, getCallUserID(callLogData))
+        val subscribe =
+            ProfileInfoManager.getProfileInfoByUserID(mReceiverID, getCallUserID(callLogData))
                 .doOnNext {
                     bindAvatar(view, it.profileFileInfo)
                 }
@@ -88,14 +89,14 @@ class CallListPresenter : CallListContract.Presenter<CallListContract.View> {
 
     private fun bindAvatar(view: CallListAdapter.IItemView, fileInfo: LTFileInfo?) {
         val subscribe = AvatarManager.loadAvatar(mReceiverID, fileInfo)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    view.bindAvatar(it)
-                }, {
-                    logError("bindAvatar", it)
-                    view.bindAvatar(null)
-                })
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                view.bindAvatar(it)
+            }, {
+                logError("bindAvatar", it)
+                view.bindAvatar(null)
+            })
         mDisposable.add(subscribe)
     }
 
@@ -109,21 +110,21 @@ class CallListPresenter : CallListContract.Presenter<CallListContract.View> {
 
     override fun getCallLog(requestTime: Long, count: Int) {
         val subscribe = CallManager.getCallLog(mReceiverID, requestTime, count)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    logDebug("getCallLog : ${it.size}")
-                    if (it.isNotEmpty()) {
-                        mCallLogList.addAll(it)
-                        mView?.addData(it)
-                        // load more
-                        if (it.size == DEFAULT_COUNT) {
-                            getCallLog(it.last().startTime - 1, -DEFAULT_COUNT)
-                        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                logDebug("getCallLog : ${it.size}")
+                if (it.isNotEmpty()) {
+                    mCallLogList.addAll(it)
+                    mView?.addData(it)
+                    // load more
+                    if (it.size == DEFAULT_COUNT) {
+                        getCallLog(it.last().startTime - 1, -DEFAULT_COUNT)
                     }
-                }, {
-                    logError("getCallLog", it)
-                    mView?.showSnackBar(R.string.call_list_get_call_log_list_error)
-                })
+                }
+            }, {
+                logError("getCallLog", it)
+                mView?.showSnackBar(R.string.call_list_get_call_log_list_error)
+            })
         mDisposable.add(subscribe)
     }
 

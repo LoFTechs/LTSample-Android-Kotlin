@@ -20,4 +20,10 @@
         app:showAsAction="never"
         tools:ignore="AppCompatResource" />
 
+    <item
+        android:id="@+id/secure_check"
+        android:title="@string/main_tab_menu_item_secure_check"
+        app:showAsAction="never"
+        tools:ignore="AppCompatResource" />
+
 </menu>

@@ -24,8 +24,8 @@ class MainPresenter : MainContract.Presenter<MainContract.View> {
     private lateinit var mReceiverID: String
     private val mFragmentTypeList: ArrayList<MainItemType> by lazy {
         arrayListOf(
-                MainItemType.CHAT,
-                MainItemType.CALL
+            MainItemType.CHAT,
+            MainItemType.CALL
         )
     }
 
@@ -62,42 +62,43 @@ class MainPresenter : MainContract.Presenter<MainContract.View> {
 
     override fun logout() {
         LTSDKManager.getIMManager(mReceiverID)
-                .flatMap { imManager: LTIMManager ->
-                    Observable.create { emitter: ObservableEmitter<Boolean> ->
-                        imManager.disconnect(object : LTCallbackResultListener<Boolean> {
-                            override fun onResult(result: Boolean) {
-                                emitter.onNext(true)
-                                emitter.onComplete()
-                            }
+            .flatMap { imManager: LTIMManager ->
+//                        imManager: LTIMManager ->
+                Observable.create { emitter: ObservableEmitter<Boolean> ->
+                    imManager.disconnect(object : LTCallbackResultListener<Boolean> {
+                        override fun onResult(result: Boolean) {
+                            emitter.onNext(true)
+                            emitter.onComplete()
+                        }
 
-                            override fun onError(errorInfo: LTErrorInfo) {
-                                emitter.onNext(false)
-                                emitter.onComplete()
-                            }
-                        })
-                    }
+                        override fun onError(errorInfo: LTErrorInfo) {
+                            emitter.onNext(false)
+                            emitter.onComplete()
+                        }
+                    })
                 }
-                .flatMap {
-                    LTSDKManager.resetSDK()
+            }
+            .flatMap {
+                LTSDKManager.resetSDK()
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Boolean> {
+                override fun onSubscribe(d: Disposable) {
                 }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<Boolean> {
-                    override fun onSubscribe(d: Disposable) {
-                    }
 
-                    override fun onNext(result: Boolean) {
-                        Timber.tag(TAG).d("logoff status : $result")
-                    }
+                override fun onNext(result: Boolean) {
+                    Timber.tag(TAG).d("logoff status : $result")
+                }
 
-                    override fun onError(e: Throwable) {
-                        Timber.tag(TAG).e("logoff error e : $e")
-                    }
+                override fun onError(e: Throwable) {
+                    Timber.tag(TAG).e("logoff error e : $e")
+                }
 
-                    override fun onComplete() {
-                        (SampleApp.context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
-                                .clearApplicationUserData()
-                    }
-                })
+                override fun onComplete() {
+                    (SampleApp.context.getSystemService(ACTIVITY_SERVICE) as ActivityManager)
+                        .clearApplicationUserData()
+                }
+            })
     }
 
     override fun onFabClick(currentItem: Int) {
@@ -110,9 +111,11 @@ class MainPresenter : MainContract.Presenter<MainContract.View> {
             0 -> {
                 R.string.main_tab_item_chat
             }
+
             1 -> {
                 R.string.main_tab_item_call
             }
+
             else -> {
                 0
             }
@@ -124,9 +127,11 @@ class MainPresenter : MainContract.Presenter<MainContract.View> {
             0 -> {
                 R.drawable.ic_action_compose
             }
+
             1 -> {
                 R.drawable.ic_action_new_call
             }
+
             else -> {
                 0
             }
@@ -135,5 +140,8 @@ class MainPresenter : MainContract.Presenter<MainContract.View> {
 
     override fun getTabItemType(position: Int): MainItemType {
         return mFragmentTypeList[position]
+    }
+
+    override fun secureCheck() {
     }
 }

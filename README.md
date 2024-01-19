@@ -19,9 +19,9 @@ To use our Android sample, you should first install
 
 ### Requirements
 
-|Sample|Android|Java|Gradle| 
-|---|---|---|---|
-| LTSample |5.0 (API level 21) or higher|7 or higher|3.5.4 or higher |
+|Sample|Android| Java        | Gradle          | 
+|---|---|-------------|-----------------|
+| LTSample |5.0 (API level 21) or higher| 8 or higher | 7.3.3 or higher |
 
 ### Start LT Sample
 

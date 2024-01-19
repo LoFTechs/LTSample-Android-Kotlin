@@ -15,6 +15,8 @@ interface MainContract {
 
         fun logout()
 
+        fun secureCheck()
+
         @StringRes
         fun getTabStringResourceID(position: Int): Int
         fun getTabItemType(position: Int): MainItemType

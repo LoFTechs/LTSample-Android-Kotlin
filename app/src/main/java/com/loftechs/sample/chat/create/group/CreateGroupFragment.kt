@@ -113,6 +113,7 @@ class CreateGroupFragment : AbstractFragment(), CreateGroupContract.View {
         mGroupAvatar.loadImageWithGlide(R.drawable.ic_add_photo_alpha, uri, true)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_OK) {

@@ -10,6 +10,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.loftechs.sample.LTSDKManager
 import com.loftechs.sample.R
 import com.loftechs.sample.base.AbstractFragment
 import com.loftechs.sample.base.BaseContract
@@ -97,6 +98,10 @@ class MainFragment : AbstractFragment(), MainContract.View {
                 }
                 R.id.log_out -> {
                     showLogOutDialog()
+                    true
+                }
+                R.id.secure_check -> {
+                    mPresenter?.secureCheck()
                     true
                 }
                 else -> false

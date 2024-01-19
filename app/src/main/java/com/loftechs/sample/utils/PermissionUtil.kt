@@ -12,4 +12,9 @@ object PermissionUtil {
             //Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO //不能用 permission_group.MICROPHONE，有些手機會認不出來
     )
+
+    val bluetoothPerms = arrayOf(
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.BLUETOOTH_SCAN
+    )
 }

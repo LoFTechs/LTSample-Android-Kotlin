@@ -42,8 +42,8 @@ fun MessageFlowManager.allMessage() {
 //            .msgContent("690d1a03-b9c5-ae30-046b-24936dc97c46,3013,2")
 //            .build()
 //    // Image Message
-//    val imageUri: Uri = Uri.parse(Environment.getExternalStorageDirectory().toString()+ File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
-//    val thUri: Uri = Uri.parse(Environment.getExternalStorageDirectory().toString()+ File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+//    val imageUri: Uri = Uri.parse(Environment.getRootDirectory().toString()+ File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+//    val thUri: Uri = Uri.parse(Environment.getRootDirectory().toString()+ File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
 //    val extInfoMap: MutableMap<String, Any> = HashMap()
 //    extInfoMap["width"] = 360
 //    extInfoMap["height"] = 422
@@ -57,8 +57,8 @@ fun MessageFlowManager.allMessage() {
 //            .displayFileName("android.png")
 //            .build()
 //    // Video Message
-//    val videoUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/test.mp4")
-//    val thumbnailUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/images.jpeg")
+//    val videoUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/test.mp4")
+//    val thumbnailUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/images.jpeg")
 //    val extInfoMap: MutableMap<String, Any> = HashMap()
 //    extInfoMap["width"] = 360
 //    extInfoMap["height"] = 422
@@ -72,7 +72,7 @@ fun MessageFlowManager.allMessage() {
 //            .displayFileName("android.mp4")
 //            .build()
 //    // Voice Message
-//    val voiceUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/27dc2d02-a0df-47d9-9443-f8678356e25e.aac")
+//    val voiceUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/27dc2d02-a0df-47d9-9443-f8678356e25e.aac")
 //    val extInfoMap: MutableMap<String, Any> = HashMap()
 //    extInfoMap["duration"] = "00:05:30"
 //    val voiceMessage = LTVoiceMessage.builder()
@@ -96,8 +96,8 @@ fun MessageFlowManager.allMessage() {
 //            .location(location)
 //            .build()
 //    // Contact Message
-//    val contactUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/27dc2d02-a0df-47d9-9443-f8678356e25e.vcf")
-//    val thumbnailUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/images.jpeg")
+//    val contactUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/27dc2d02-a0df-47d9-9443-f8678356e25e.vcf")
+//    val thumbnailUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/images.jpeg")
 //    val extInfoMap: MutableMap<String, Any> = HashMap()
 //    extInfoMap["displayName"] = "Ann"
 //    val contactsMessage = LTContactMessage.builder()
@@ -110,7 +110,7 @@ fun MessageFlowManager.allMessage() {
 //            .extInfo(extInfoMap)
 //            .build()
 //    // Document Message
-//    val documentUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/27dc2d02-a0df-47d9-9443-f8678356e25e.doc")
+//    val documentUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/27dc2d02-a0df-47d9-9443-f8678356e25e.doc")
 //    val extInfoMap: MutableMap<String, Any> = HashMap()
 //    extInfoMap["fileSize"] = "5MB"
 //    LTDocumentMessage.builder()
@@ -142,8 +142,8 @@ fun MessageFlowManager.allMessage() {
 //            .senderID("senderUserID")
 //            .senderNickname("Ann")
 //            .build()
-//    val imageUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
-//    val thUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+//    val imageUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+//    val thUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
 //    val extInfoMap: MutableMap<String, Any> = HashMap()
 //    extInfoMap["width"] = 360
 //    extInfoMap["height"] = 422
@@ -226,8 +226,8 @@ fun MessageFlowManager.sendBroadcastMessages(receiverID: String)
                             .msgContent("690d1a03-b9c5-ae30-046b-24936dc97c46,3013,2")
                             .build()
                     // Image Message
-                    val imageUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
-                    val thUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+                    val imageUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+                    val thUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
                     val extInfoMap: MutableMap<String, Any> = HashMap()
                     extInfoMap["width"] = 360
                     extInfoMap["height"] = 422
@@ -283,8 +283,8 @@ fun MessageFlowManager.sendScheduledMessages(receiverID: String)
                             .msgContent("690d1a03-b9c5-ae30-046b-24936dc97c46,3013,2")
                             .build()
                     // Image Message
-                    val imageUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
-                    val thUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+                    val imageUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+                    val thUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
                     val extInfoMap: MutableMap<String, Any> = HashMap()
                     extInfoMap["width"] = 360
                     extInfoMap["height"] = 422
@@ -782,8 +782,8 @@ fun MessageFlowManager.recallMessages(
 //                            .groupID("groupID") //如需針對 group 發訊才需設置
 //                            .build()
 //                    // Image Message
-//                    val imageUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
-//                    val thUri = Uri.parse(Environment.getExternalStorageDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+//                    val imageUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
+//                    val thUri = Uri.parse(Environment.getRootDirectory().toString() + File.separator.toString() + "Download/ef05f74a-90f7-4f69-94cb-d588fa435bae.png")
 //                    val extInfoMap: MutableMap<String, Any> = HashMap()
 //                    extInfoMap["width"] = 360
 //                    extInfoMap["height"] = 422

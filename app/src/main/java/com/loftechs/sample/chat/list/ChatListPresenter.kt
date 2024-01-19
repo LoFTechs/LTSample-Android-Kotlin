@@ -88,17 +88,17 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
 
     override fun loadChatList() {
         val subscribe = ChatFlowManager.queryChannelListByChannelType(receiverID, mChannelTypeList)
-                .flatMap {
-                    logDebug("loadChatList size: ${it.size}")
-                    updateChatListToMapAndSort(it)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    refreshUI(it)
-                }, {
-                    logError("loadChatList", it)
-                    it.printStackTrace()
-                })
+            .flatMap {
+                logDebug("loadChatList size: ${it.size}")
+                updateChatListToMapAndSort(it)
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                refreshUI(it)
+            }, {
+                logError("loadChatList", it)
+                it.printStackTrace()
+            })
         mDisposable.add(subscribe)
     }
 
@@ -121,19 +121,24 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
             ProfileInfoManager.getProfileInfoByChatID(receiverID, channel.chID)
         }
         val subscribe = profileObservable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    logDebug("id : ${it.id} name : ${it.displayName}")
-                    view.setTitleText(it.displayName)
-                    bindAvatar(view, it.profileFileInfo, defaultDrawable)
-                }, {
-                    logError("onBindViewHolder", it)
-                    it.printStackTrace()
-                })
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                logDebug("id : ${it.id} name : ${it.displayName}")
+                view.setTitleText(it.displayName)
+                bindAvatar(view, it.profileFileInfo, defaultDrawable)
+            }, {
+                logError("onBindViewHolder", it)
+                it.printStackTrace()
+            })
         mDisposable.add(subscribe)
         bindLastMessage(channel, view)
-        view.setMessageTimeText(DateFormatUtil.getStringFormat(channel.lastMsgTime, "yyyy/MM/dd HH:mm:ss"))
+        view.setMessageTimeText(
+            DateFormatUtil.getStringFormat(
+                channel.lastMsgTime,
+                "yyyy/MM/dd HH:mm:ss"
+            )
+        )
         var unreadCount = ""
         if (channel.unreadCount > 0) {
             unreadCount = channel.unreadCount.toString()
@@ -156,27 +161,38 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
             -> {
                 view.setLastMsgText(channel.lastMsgType.getShowMessage())
             }
+
             else -> {
                 view.setLastMsgText(channel.lastMsgContent)
             }
         }
     }
 
-    private fun bindAvatar(view: ChatListAdapter.IItemView, fileInfo: LTFileInfo?, defaultDrawable: Int) {
+    private fun bindAvatar(
+        view: ChatListAdapter.IItemView,
+        fileInfo: LTFileInfo?,
+        defaultDrawable: Int
+    ) {
         val subscribe = AvatarManager.loadAvatar(mReceiverID, fileInfo)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    view.bindAvatar(it, defaultDrawable)
-                }, {
-                    logError("bindAvatar", it)
-                    view.bindAvatar(null, defaultDrawable)
-                })
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                view.bindAvatar(it, defaultDrawable)
+            }, {
+                logError("bindAvatar", it)
+                view.bindAvatar(null, defaultDrawable)
+            })
         mDisposable.add(subscribe)
     }
 
     override fun onItemClick(response: LTChannelResponse, subject: String) {
-        mView?.gotoChatPage(response.chID, response.chType, subject, response.memberCount, response.lastMsgTime)
+        mView?.gotoChatPage(
+            response.chID,
+            response.chType,
+            subject,
+            response.memberCount,
+            response.lastMsgTime
+        )
     }
 
     private fun sortChatList(): List<LTChannelResponse> {
@@ -188,27 +204,27 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
 
     private fun loadChatByID(id: String) {
         val subscribe = ChatFlowManager.queryChannelByID(receiverID, id)
-                .flatMap {
-                    updateChatListToMapAndSort(arrayListOf(it))
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    logDebug("loadChatByID onNext: $it")
-                    refreshUI(it)
-                }, {
-                    logError("loadChatByID", it)
-                })
+            .flatMap {
+                updateChatListToMapAndSort(arrayListOf(it))
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                logDebug("loadChatByID onNext: $it")
+                refreshUI(it)
+            }, {
+                logError("loadChatByID", it)
+            })
         mDisposable.add(subscribe)
     }
 
     private fun updateChatListToMapAndSort(chatList: List<LTChannelResponse>): Observable<List<LTChannelResponse>> {
         return Observable.fromIterable(chatList)
-                .toMap(LTChannelResponse::getChID)
-                .toObservable()
-                .map {
-                    mChatMap.putAll(it)
-                    sortChatList()
-                }
+            .toMap(LTChannelResponse::getChID)
+            .toObservable()
+            .map {
+                mChatMap.putAll(it)
+                sortChatList()
+            }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

@@ -13,8 +13,10 @@ import com.loftechs.sdk.http.response.LTResponse
 import com.loftechs.sdk.im.LTIMManager
 import com.loftechs.sdk.listener.LTCallbackResultListener
 import com.loftechs.sdk.listener.LTErrorInfo
+import com.loftechs.sdk.permission.LTPermissionManager
 import com.loftechs.sdk.storage.LTStorageManager
 import com.loftechs.sdk.utils.LTLog
+import com.loftechs.sdk.utils.ScheduleWorker
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -74,6 +76,13 @@ object LTSDKManager {
     fun getCallCenterManager(): Observable<LTCallCenterManager> {
         return sdkObservable
             .map { sdk: LTSDK -> sdk.getCallManager() }
+    }
+
+    fun getPermissionManager(): Observable<LTPermissionManager> {
+        return sdkObservable
+                .map{
+                    it.getPermissionManager()
+                }
     }
 
     fun resetSDK(): Observable<Boolean> {

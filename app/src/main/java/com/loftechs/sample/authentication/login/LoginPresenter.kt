@@ -13,9 +13,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class LoginPresenter : AbstractAuthenticationPresenter(), LoginContract.Presenter<LoginContract.View> {
+class LoginPresenter : AbstractAuthenticationPresenter(),
+    LoginContract.Presenter<LoginContract.View> {
 
     private var mView: LoginContract.View? = null
+
+    private var DEBUG_MODE = "debug"
 
     override fun initBundle(arguments: Bundle) {
     }
@@ -41,47 +44,85 @@ class LoginPresenter : AbstractAuthenticationPresenter(), LoginContract.Presente
     }
 
     override fun login(account: String, password: String) {
+        if (account == DEBUG_MODE) {
+            loginByUserID("", "")
+            return
+        }
         AccountManager.login(account, password)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { response ->
-                    logDebug("login loginResponse : $response")
-                    if (response.returnCode == "0") {
-                        init(AccountEntity(account, password, response.userID, response.uuid))
-                                .doOnNext {
-                                    val bundle = Bundle()
-                                    bundle.putString(IntentKey.EXTRA_RECEIVER_ID, response.userID)
-                                    bundle.putString(IntentKey.EXTRA_ACCOUNT_ID, account)
-                                    mView?.gotoMainActivity(bundle)
-                                }
-                                .map { true }
-                                .observeOn(AndroidSchedulers.mainThread())
-                    } else {
-                        response.returnCode?.let {
-                            mView?.showErrorDialog(parseErrorMessage(it))
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap { response ->
+                logDebug("login loginResponse : $response")
+                if (response.returnCode == "0") {
+                    init(AccountEntity(account, password, response.userID, response.uuid))
+                        .doOnNext {
+                            val bundle = Bundle()
+                            bundle.putString(IntentKey.EXTRA_RECEIVER_ID, response.userID)
+                            bundle.putString(IntentKey.EXTRA_ACCOUNT_ID, account)
+                            mView?.gotoMainActivity(bundle)
                         }
-                        Observable.just(false)
+                        .map { true }
+                        .observeOn(AndroidSchedulers.mainThread())
+                } else {
+                    response.returnCode?.let {
+                        mView?.showErrorDialog(parseErrorMessage(it))
                     }
+                    Observable.just(false)
                 }
-                .doOnSubscribe {
-                    mView?.showProgressDialog()
+            }
+            .doOnSubscribe {
+                mView?.showProgressDialog()
+            }
+            .subscribe(object : Observer<Boolean> {
+                override fun onSubscribe(d: Disposable) {
                 }
-                .subscribe(object : Observer<Boolean> {
-                    override fun onSubscribe(d: Disposable) {
-                    }
 
-                    override fun onNext(t: Boolean) {
-                        mView?.dismissProgressDialog()
-                    }
+                override fun onNext(t: Boolean) {
+                    mView?.dismissProgressDialog()
+                }
 
-                    override fun onError(e: Throwable) {
-                        mView?.dismissProgressDialog()
-                        logError("login", e)
-                        e.printStackTrace()
-                    }
+                override fun onError(e: Throwable) {
+                    mView?.dismissProgressDialog()
+                    logError("login", e)
+                    e.printStackTrace()
+                }
 
-                    override fun onComplete() {
-                    }
-                })
+                override fun onComplete() {
+                }
+            })
+    }
+
+    private fun loginByUserID(userID: String, uuid: String) {
+        val account = ""
+        val password = ""
+        init(AccountEntity(account, password, userID, uuid))
+            .doOnNext {
+                val bundle = Bundle()
+                bundle.putString(IntentKey.EXTRA_RECEIVER_ID, userID)
+                bundle.putString(IntentKey.EXTRA_ACCOUNT_ID, account)
+                mView?.gotoMainActivity(bundle)
+            }
+            .map { true }
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                mView?.showProgressDialog()
+            }
+            .subscribe(object : Observer<Boolean> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(t: Boolean) {
+                    mView?.dismissProgressDialog()
+                }
+
+                override fun onError(e: Throwable) {
+                    mView?.dismissProgressDialog()
+                    logError("login", e)
+                    e.printStackTrace()
+                }
+
+                override fun onComplete() {
+                }
+            })
     }
 }

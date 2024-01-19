@@ -157,7 +157,7 @@ class VoiceCallFragment : AbstractFragment(), VoiceCallContract.View, View.OnCli
                 if (p1) {
                     CallManager.routeAudioToSpeaker()
                 } else {
-                    CallManager.routeAudioToReceiver()
+                    CallManager.routeAudioToBluetooth()
                 }
             }
             R.id.mute -> {
