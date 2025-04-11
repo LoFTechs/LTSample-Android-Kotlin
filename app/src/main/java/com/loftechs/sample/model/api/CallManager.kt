@@ -488,6 +488,9 @@ object CallManager : LTCallStateListener, LTCallNotificationListener {
                 .setContentTitle(appName)
                 .setContentText(displayName + notifyMessage)
                 .setContentIntent(notificationContentIntent)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setOngoing(true)
+                .setFullScreenIntent(notificationContentIntent, true)
 
             if (isIncomingCall) {
                 builder.setCustomBigContentView(bigRemoteViews)

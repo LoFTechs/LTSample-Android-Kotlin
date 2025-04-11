@@ -63,8 +63,14 @@ fun Uri.getFileName(): String? {
     val cursor = SampleApp.context.contentResolver.query(this, projection,
             null, null, null, null)
     cursor.use {
-        if (it != null && it.moveToNext()) {
-            return it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        if (it != null && it.moveToFirst()) {
+            val columnIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            return if (columnIndex != -1) {
+                // -1 means not exists
+                it.getString(columnIndex)
+            } else {
+                ""
+            }
         }
     }
     return ""

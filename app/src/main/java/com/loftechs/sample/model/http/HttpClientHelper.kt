@@ -33,9 +33,10 @@ abstract class HttpClientHelper {
 
     init {
         gsonFactory = GsonConverterFactory.create(
-                GsonBuilder()
-                        .registerTypeAdapter(Boolean::class.java, BooleanTypeAdapter())
-                        .create())
+            GsonBuilder()
+                .registerTypeAdapter(Boolean::class.java, BooleanTypeAdapter())
+                .create()
+        )
         scalarsFactory = ScalarsConverterFactory.create()
     }
 
@@ -51,14 +52,16 @@ abstract class HttpClientHelper {
 
     private fun createCertificatePinner(): CertificatePinner {
         return CertificatePinner.Builder()
-                .add("baby.juiker.net", "sha256/jR3zdhzwnG+GruQYsx51BYWBVVqcOipsvA7l9l8KpHA=")
-                .build()
+            .add("baby.juiker.net", "sha256/jR3zdhzwnG+GruQYsx51BYWBVVqcOipsvA7l9l8KpHA=")
+            .build()
     }
 
     private fun restClient() {
         client.certificatePinner(createCertificatePinner())
-                .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(LTIntercept())
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(45, TimeUnit.SECONDS)
+            .writeTimeout(45, TimeUnit.SECONDS)
+            .addInterceptor(LTIntercept())
 
         if (BuildConfig.DEBUG) {
             val httpLoggingInterceptor = HttpLoggingInterceptor(logger)
@@ -69,12 +72,12 @@ abstract class HttpClientHelper {
 
     private fun resetApp() {
         mRetrofit = Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(client.build())
-                .addConverterFactory(scalarsFactory)
-                .addConverterFactory(gsonFactory)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .build()
+            .baseUrl(baseUrl)
+            .client(client.build())
+            .addConverterFactory(scalarsFactory)
+            .addConverterFactory(gsonFactory)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .build()
     }
 
     val service: IService

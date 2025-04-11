@@ -10,7 +10,7 @@ import com.loftechs.sdk.http.response.LTResponse
 import com.loftechs.sdk.listener.LTCallbackResultListener
 import com.loftechs.sdk.listener.LTErrorInfo
 import timber.log.Timber
-import java.util.Calendar
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 object FCMTokenHelper {

@@ -1,6 +1,9 @@
 package com.loftechs.sample.chat.list
 
 import android.os.Bundle
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.loftechs.sample.LTSDKManager
 import com.loftechs.sample.R
 import com.loftechs.sample.common.IntentKey
 import com.loftechs.sample.common.event.ChatCloseEvent
@@ -11,17 +14,25 @@ import com.loftechs.sample.extensions.getShowMessage
 import com.loftechs.sample.extensions.logDebug
 import com.loftechs.sample.extensions.logError
 import com.loftechs.sample.extensions.logThread
+import com.loftechs.sample.main.MainActivity
 import com.loftechs.sample.model.AvatarManager
 import com.loftechs.sample.model.ProfileInfoManager
 import com.loftechs.sample.model.api.ChatFlowManager
+import com.loftechs.sample.model.api.UserManager
 import com.loftechs.sample.utils.DateFormatUtil
+import com.loftechs.sdk.extension.rx.getUsers
 import com.loftechs.sdk.im.channels.LTChannelResponse
 import com.loftechs.sdk.im.channels.LTChannelType
 import com.loftechs.sdk.im.message.LTMessageType
+import com.loftechs.sdk.listener.LTCallbackResultListener
+import com.loftechs.sdk.listener.LTErrorInfo
 import com.loftechs.sdk.storage.LTFileInfo
+import com.loftechs.sdk.user.LTUserManager
+import com.loftechs.sdk.utils.LTLog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -88,18 +99,19 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
 
     override fun loadChatList() {
         val subscribe = ChatFlowManager.queryChannelListByChannelType(receiverID, mChannelTypeList)
-            .flatMap {
-                logDebug("loadChatList size: ${it.size}")
-                updateChatListToMapAndSort(it)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                refreshUI(it)
-            }, {
-                logError("loadChatList", it)
-                it.printStackTrace()
-            })
+                .flatMap {
+                    logDebug("loadChatList size: ${it.size}")
+                    updateChatListToMapAndSort(it)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    refreshUI(it)
+                }, {
+                    logError("loadChatList", it)
+                    it.printStackTrace()
+                })
         mDisposable.add(subscribe)
+
     }
 
     private fun refreshUI(chatList: List<LTChannelResponse>) {
@@ -121,24 +133,19 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
             ProfileInfoManager.getProfileInfoByChatID(receiverID, channel.chID)
         }
         val subscribe = profileObservable
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                logDebug("id : ${it.id} name : ${it.displayName}")
-                view.setTitleText(it.displayName)
-                bindAvatar(view, it.profileFileInfo, defaultDrawable)
-            }, {
-                logError("onBindViewHolder", it)
-                it.printStackTrace()
-            })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    logDebug("id : ${it.id} name : ${it.displayName}")
+                    view.setTitleText(it.displayName)
+                    bindAvatar(view, it.profileFileInfo, defaultDrawable)
+                }, {
+                    logError("onBindViewHolder", it)
+                    it.printStackTrace()
+                })
         mDisposable.add(subscribe)
         bindLastMessage(channel, view)
-        view.setMessageTimeText(
-            DateFormatUtil.getStringFormat(
-                channel.lastMsgTime,
-                "yyyy/MM/dd HH:mm:ss"
-            )
-        )
+        view.setMessageTimeText(DateFormatUtil.getStringFormat(channel.lastMsgTime, "yyyy/MM/dd HH:mm:ss"))
         var unreadCount = ""
         if (channel.unreadCount > 0) {
             unreadCount = channel.unreadCount.toString()
@@ -161,38 +168,27 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
             -> {
                 view.setLastMsgText(channel.lastMsgType.getShowMessage())
             }
-
             else -> {
                 view.setLastMsgText(channel.lastMsgContent)
             }
         }
     }
 
-    private fun bindAvatar(
-        view: ChatListAdapter.IItemView,
-        fileInfo: LTFileInfo?,
-        defaultDrawable: Int
-    ) {
+    private fun bindAvatar(view: ChatListAdapter.IItemView, fileInfo: LTFileInfo?, defaultDrawable: Int) {
         val subscribe = AvatarManager.loadAvatar(mReceiverID, fileInfo)
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                view.bindAvatar(it, defaultDrawable)
-            }, {
-                logError("bindAvatar", it)
-                view.bindAvatar(null, defaultDrawable)
-            })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    view.bindAvatar(it, defaultDrawable)
+                }, {
+                    logError("bindAvatar", it)
+                    view.bindAvatar(null, defaultDrawable)
+                })
         mDisposable.add(subscribe)
     }
 
     override fun onItemClick(response: LTChannelResponse, subject: String) {
-        mView?.gotoChatPage(
-            response.chID,
-            response.chType,
-            subject,
-            response.memberCount,
-            response.lastMsgTime
-        )
+        mView?.gotoChatPage(response.chID, response.chType, subject, response.memberCount, response.lastMsgTime)
     }
 
     private fun sortChatList(): List<LTChannelResponse> {
@@ -204,27 +200,27 @@ class ChatListPresenter : ChatListContract.Presenter<ChatListContract.View> {
 
     private fun loadChatByID(id: String) {
         val subscribe = ChatFlowManager.queryChannelByID(receiverID, id)
-            .flatMap {
-                updateChatListToMapAndSort(arrayListOf(it))
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                logDebug("loadChatByID onNext: $it")
-                refreshUI(it)
-            }, {
-                logError("loadChatByID", it)
-            })
+                .flatMap {
+                    updateChatListToMapAndSort(arrayListOf(it))
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    logDebug("loadChatByID onNext: $it")
+                    refreshUI(it)
+                }, {
+                    logError("loadChatByID", it)
+                })
         mDisposable.add(subscribe)
     }
 
     private fun updateChatListToMapAndSort(chatList: List<LTChannelResponse>): Observable<List<LTChannelResponse>> {
         return Observable.fromIterable(chatList)
-            .toMap(LTChannelResponse::getChID)
-            .toObservable()
-            .map {
-                mChatMap.putAll(it)
-                sortChatList()
-            }
+                .toMap(LTChannelResponse::getChID)
+                .toObservable()
+                .map {
+                    mChatMap.putAll(it)
+                    sortChatList()
+                }
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

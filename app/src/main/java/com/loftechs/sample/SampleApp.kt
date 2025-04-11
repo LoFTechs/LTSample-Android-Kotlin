@@ -44,8 +44,6 @@ class SampleApp : Application() {
     }
 
     private fun initSDK() {
-//        LTLog.wDebug = true // maven disable
-//        LTLog.bDebug = true // maven disable
         LTSDK.initContext(context)
     }
 
