@@ -1,6 +1,7 @@
 package com.loftechs.sample.model.api
 
 import com.loftechs.sample.LTSDKManager.sdkObservable
+import com.loftechs.sample.fcm.FCMTokenHelper
 import com.loftechs.sdk.LTSDK
 import com.loftechs.sdk.listener.LTCallbackResultListener
 import com.loftechs.sdk.listener.LTErrorInfo
@@ -23,6 +24,7 @@ object UserManager {
                 }
 
                 override fun onResult(result: LTUsers) {
+                    FCMTokenHelper.performUpdate()
                     emmit.onNext(result)
                     emmit.onComplete()
                 }

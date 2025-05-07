@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import com.google.android.material.appbar.MaterialToolbar
 import com.loftechs.sample.R
-import com.loftechs.sample.base.BaseContract
 import com.loftechs.sample.base.AbstractFragment
+import com.loftechs.sample.base.BaseContract
 import com.loftechs.sample.common.IntentKey
 import com.loftechs.sample.common.picker.PickerFragment
 import com.loftechs.sample.component.VerticalRecyclerView
 import com.loftechs.sample.extensions.logDebug
 import com.loftechs.sample.model.data.ProfileInfoEntity
-import java.util.*
 
 abstract class AbstractCreateFragment : AbstractFragment(), CreateContract.View {
 
@@ -26,7 +25,11 @@ abstract class AbstractCreateFragment : AbstractFragment(), CreateContract.View 
 
     abstract fun getCreatePresenter(): CreateContract.Presenter<CreateContract.View>
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_base_create, container, false)
     }
 
@@ -73,19 +76,34 @@ abstract class AbstractCreateFragment : AbstractFragment(), CreateContract.View 
         })
     }
 
-    override fun showCheckAccountDialog() {
+    override fun showCheckAccountDialog(createItemType: CreateItemType) {
         val customLayout: View = layoutInflater.inflate(R.layout.dialog_edit_text, null)
         val editText: EditText = customLayout.findViewById(R.id.editText)
+        val title = when (createItemType) {
+            CreateItemType.PHONE_NUMBER -> {
+                getText(R.string.string_phone).toString()
+            }
+
+            CreateItemType.USERID -> {
+                getText(R.string.string_userid).toString()
+            }
+
+            CreateItemType.SEMI_UID -> {
+                getText(R.string.string_account).toString()
+            }
+
+            CreateItemType.ITEM, CreateItemType.GROUP -> getText(R.string.string_account).toString()
+        }
         AlertDialog.Builder(requireContext())
-                .setTitle(getText(R.string.string_account))
-                .setView(customLayout)
-                .setPositiveButton(R.string.common_confirm) { _, _ ->
-                    if (editText.toString().isEmpty()) {
-                        return@setPositiveButton
-                    }
-                    mPresenter?.checkUserExistAndCreate(editText.text.toString())
+            .setTitle(title)
+            .setView(customLayout)
+            .setPositiveButton(R.string.common_confirm) { _, _ ->
+                if (editText.toString().isEmpty()) {
+                    return@setPositiveButton
                 }
-                .setNegativeButton(R.string.common_cancel, null)
-                .show()
+                mPresenter?.checkUserExistAndCreate(editText.text.toString(), createItemType)
+            }
+            .setNegativeButton(R.string.common_cancel, null)
+            .show()
     }
 }

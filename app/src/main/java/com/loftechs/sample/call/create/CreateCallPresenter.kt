@@ -2,17 +2,18 @@ package com.loftechs.sample.call.create
 
 import android.os.Bundle
 import com.loftechs.sample.call.list.CallState
-import com.loftechs.sample.chat.create.CreateItemType
 import com.loftechs.sample.common.IntentKey
 import com.loftechs.sample.common.create.AbstractCreatePresenter
+import com.loftechs.sample.common.create.CreateItemType
 import com.loftechs.sample.model.data.ProfileInfoEntity
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
 class CreateCallPresenter : AbstractCreatePresenter() {
-
     override val defaultItemList: ArrayList<ProfileInfoEntity> = arrayListOf(
-            CreateItemType.NEW_CONTACT.getUserInfo()
+        CreateItemType.SEMI_UID.getUserInfo(),
+        CreateItemType.PHONE_NUMBER.getUserInfo(),
+        CreateItemType.USERID.getUserInfo()
     )
 
     override var itemList: ArrayList<ProfileInfoEntity> = ArrayList()
@@ -33,8 +34,17 @@ class CreateCallPresenter : AbstractCreatePresenter() {
     override fun getItemType(position: Int): CreateItemType {
         return when (position) {
             0 -> {
-                CreateItemType.NEW_CONTACT
+                CreateItemType.SEMI_UID
             }
+
+            1 -> {
+                CreateItemType.PHONE_NUMBER
+            }
+
+            2 -> {
+                CreateItemType.USERID
+            }
+
             else -> {
                 CreateItemType.ITEM
             }

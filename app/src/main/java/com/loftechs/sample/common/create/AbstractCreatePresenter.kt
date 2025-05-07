@@ -94,8 +94,32 @@ abstract class AbstractCreatePresenter : CreateContract.Presenter<CreateContract
         getItemType(position).doActionClick(mView, this, position)
     }
 
-    override fun checkUserExistAndCreate(account: String) {
-        val subscribe = UserManager.getUserStatusWithSemiUIDs(listOf(account))
+    override fun checkUserExistAndCreate(inputString: String, createItemType: CreateItemType) {
+        if (createItemType == CreateItemType.USERID) {
+            val subscribe =
+                ProfileInfoManager.getProfileInfoByUserID(mReceiverID, inputString, inputString)
+                    .flatMap {
+                        ProfileInfoManager.updateProfileInfo(it)
+                        createOneToOne(it.id, it.displayName)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe {
+                        mView?.showProgressDialog()
+                    }
+                    .subscribe({
+                        logDebug("checkUserToCreateChannel onNext ++ $it")
+                        mView?.dismissProgressDialog()
+                        mView?.gotoOneToOnePage(it)
+                    }, {
+                        logError("checkUserToCreateChannel", it)
+                        it.printStackTrace()
+                        mView?.dismissProgressDialog()
+                        mView?.showErrorDialog(R.string.create_user_is_not_member)
+                    })
+            disposable.add(subscribe)
+            return
+        }
+        val subscribe = UserManager.getUserStatusWithSemiUIDs(listOf(inputString))
                 .map {
                     var user: LTUserStatus = it[0]
                     it.forEach { userStatus: LTUserStatus ->
@@ -113,6 +137,7 @@ abstract class AbstractCreatePresenter : CreateContract.Presenter<CreateContract
                     }
                 }
                 .flatMap {
+                    ProfileInfoManager.updateProfileInfo(it)
                     createOneToOne(it.id, it.displayName)
                 }
                 .observeOn(AndroidSchedulers.mainThread())

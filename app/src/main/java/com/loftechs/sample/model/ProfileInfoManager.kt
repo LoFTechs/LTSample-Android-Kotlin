@@ -10,6 +10,22 @@ import java.util.concurrent.TimeUnit
 object ProfileInfoManager {
     private const val EXPIRE_DAY = 1L
 
+    fun getProfileInfoByUserID(
+        receiverID: String,
+        userID: String,
+        number: String
+    ): Observable<ProfileInfoEntity> {
+        return Observable.just(
+            getLocalProfile(userID) ?: ProfileInfoEntity(
+                userID,
+                number,
+                "",
+                null,
+                System.currentTimeMillis()
+            )
+        )
+    }
+
     fun getProfileInfoByUserID(receiverID: String, userID: String): Observable<ProfileInfoEntity> {
         return getLocalProfile(userID)?.let {
             Observable.just(it)
@@ -44,33 +60,43 @@ object ProfileInfoManager {
         })
     }
 
-    private fun requestRemoteByUserID(receiverID: String, userID: String): Observable<ProfileInfoEntity> {
+    private fun requestRemoteByUserID(
+        receiverID: String,
+        userID: String
+    ): Observable<ProfileInfoEntity> {
         logDebug("[remote]requestRemoteByUserID $userID")
         return UserProfileManager.getUserProfile(receiverID, userID)
-                .map {
-                    logDebug("[remote]getProfileInfoByUser  $userID,response $it")
-                    ProfileInfoEntity(it.userID, it.nickname,
-                            it.profileImageID, it.profileImageFileInfo, System.currentTimeMillis())
-                }
-                .doOnNext {
-                    updateProfileInfo(it)
-                }
+            .map {
+                logDebug("[remote]getProfileInfoByUser  $userID,response $it")
+                ProfileInfoEntity(
+                    it.userID, it.nickname,
+                    it.profileImageID, it.profileImageFileInfo, System.currentTimeMillis()
+                )
+            }
+            .doOnNext {
+                updateProfileInfo(it)
+            }
     }
 
-    private fun requestRemoteByChatID(receiverID: String, chatID: String): Observable<ProfileInfoEntity> {
+    private fun requestRemoteByChatID(
+        receiverID: String,
+        chatID: String
+    ): Observable<ProfileInfoEntity> {
         logDebug("[remote]requestRemoteByChatID $chatID")
         return ChatFlowManager.queryChannelByID(receiverID, chatID)
-                .map {
-                    logDebug("[remote]getProfileInfoByChat  $chatID,response $it")
-                    ProfileInfoEntity(chatID, it.subject,
-                            it.profileImageID, it.profileImageFileInfo, System.currentTimeMillis())
-                }
-                .doOnNext {
-                    updateProfileInfo(it)
-                }
+            .map {
+                logDebug("[remote]getProfileInfoByChat  $chatID,response $it")
+                ProfileInfoEntity(
+                    chatID, it.subject,
+                    it.profileImageID, it.profileImageFileInfo, System.currentTimeMillis()
+                )
+            }
+            .doOnNext {
+                updateProfileInfo(it)
+            }
     }
 
-    private fun updateProfileInfo(profileInfoEntity: ProfileInfoEntity) {
+    fun updateProfileInfo(profileInfoEntity: ProfileInfoEntity) {
         return ProfileHelper.setProfileEntity(profileInfoEntity)
     }
 

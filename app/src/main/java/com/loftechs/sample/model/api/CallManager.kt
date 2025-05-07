@@ -324,7 +324,7 @@ object CallManager : LTCallStateListener, LTCallNotificationListener {
             val canVibrate = when (audioManager.ringerMode) {
                 AudioManager.RINGER_MODE_VIBRATE -> true
                 AudioManager.RINGER_MODE_NORMAL,
-                -> Settings.System.getInt(
+                    -> Settings.System.getInt(
                     SampleApp.context.contentResolver,
                     Settings.System.VIBRATE_WHEN_RINGING,
                     0
@@ -437,17 +437,11 @@ object CallManager : LTCallStateListener, LTCallNotificationListener {
                 bigRemoteViews.setTextViewText(R.id.txtMsg, notifyMessage)
                 val acceptIntent = getCallIntent(receiverID, callUserID, CallState.ACCEPT)
                 // Targeting S+ (version 31 and above) requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE
-                val acceptContentIntent = if (Build.VERSION.SDK_INT >= 31) {
-                    PendingIntent.getActivity(
-                        LTSDK.context, 0, acceptIntent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT
-                    )
-                } else {
-                    PendingIntent.getActivity(
-                        LTSDK.context, 0, acceptIntent,
-                        PendingIntent.FLAG_ONE_SHOT
-                    )
+                var flags = PendingIntent.FLAG_ONE_SHOT
+                if (Build.VERSION.SDK_INT >= 31) {
+                    flags = flags or PendingIntent.FLAG_IMMUTABLE
                 }
+                val acceptContentIntent = PendingIntent.getActivity(LTSDK.context, 0, acceptIntent, flags)
 
                 val declineCallIntent = Intent(
                     LTSDK.context,

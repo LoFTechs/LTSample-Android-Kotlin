@@ -4,14 +4,18 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.app.ActivityOptionsCompat
+import com.loftechs.sample.BuildConfig
 import com.loftechs.sample.LTSDKManager
 import com.loftechs.sample.R
 import com.loftechs.sample.authentication.AuthenticationActivity
 import com.loftechs.sample.base.BaseActivity
 import com.loftechs.sample.common.IntentKey.EXTRA_RECEIVER_ID
+import com.loftechs.sample.component.ProgressDialog
 import com.loftechs.sample.extensions.REQUEST_INTRO
 import com.loftechs.sample.model.AccountHelper
 import com.loftechs.sample.model.PreferenceSetting
+import com.loftechs.sample.model.api.UserManager
+import com.loftechs.sample.model.data.AccountEntity
 import com.loftechs.sample.profile.SetProfileFragment
 import com.loftechs.sdk.listener.LTErrorInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,7 +24,13 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class MainActivity : BaseActivity() {
-
+    private val engineering = BuildConfig.DEBUG  // true:自己帶入debugAccountEntity, false: 使用預設登入
+    private val debugAccountEntity = AccountEntity(
+        "TestAccount", // option, 非必要帶入
+        "password", // option,　非必要帶入
+        BuildConfig.UserID, // 必要userID
+        BuildConfig.UUID // 必要uuid
+    )
     private val mainFragment: MainFragment by lazy {
         MainFragment.newInstance()
     }
@@ -43,8 +53,43 @@ class MainActivity : BaseActivity() {
 
         if (savedInstanceState == null) {
             if (!AccountHelper.hasExistAccount()) {
-                Timber.tag(TAG).d("onCreate ++ !hasExistAccount")
-                gotoAuthenticationActivity()
+                if (engineering) {
+                    val progressDialog = ProgressDialog(this)
+                    progressDialog.show()
+                    AccountHelper.setAccountEntity(debugAccountEntity)
+                    val subscribe = LTSDKManager.sdkObservable
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .concatMap {
+                            UserManager.getUsers()
+                        }
+                        .subscribe({
+                            progressDialog.dismiss()
+                            getDefaultBundle()?.let {
+                                showMainFragment(it)
+                            } ?: run {
+                                Timber.tag(TAG).e("onCreate : bundle is null")
+                                resetSDK()
+                            }
+                        }, { e ->
+                            Timber.tag(TAG).e("initSDK ++ error: $e")
+                            if (e is LTErrorInfo && e.errorCode == LTErrorInfo.ErrorCode.INIT_ERROR && e.returnCode == 6000) {
+                                progressDialog.dismiss()
+                                AlertDialog.Builder(this)
+                                    .setMessage(e.errorMessage)
+                                    .setPositiveButton(R.string.common_confirm) { _, _ ->
+                                        resetSDK()
+                                    }
+                                    .setCancelable(false)
+                                    .show()
+                            }
+                        })
+                    disposable.add(subscribe)
+                } else {
+                    Timber.tag(TAG).d("onCreate ++ !hasExistAccount")
+                    gotoAuthenticationActivity()
+
+                }
                 return
             }
 
@@ -52,7 +97,7 @@ class MainActivity : BaseActivity() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (!AccountHelper.hasSelfNickname()) {
+                    if (!engineering && !AccountHelper.hasSelfNickname()) {
                         showSetProfileFragment()
                     } else {
                         getDefaultBundle()?.let {

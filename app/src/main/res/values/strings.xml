@@ -4,6 +4,8 @@
     <string name="common_cancel">Cancel</string>
     <string name="string_you">You</string>
     <string name="string_account">Enter Account</string>
+    <string name="string_userid">Enter UserID</string>
+    <string name="string_phone">Enter PhoneNumber</string>
 
     <string name="item_invite">Invite</string>
     <string name="item_copy">Copy</string>
